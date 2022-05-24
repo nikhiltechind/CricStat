@@ -1,0 +1,31 @@
+.head{
+    background-color:black;
+    overflow: hidden;
+    text-align: center;
+    font-size: x-large;
+    
+}
+.logo{
+    height:auto;
+    width:auto;
+    overflow: hidden;
+}
+.menu{
+    float: left;
+    overflow: hidden;
+    
+}
+.menu li{
+    width: 100px;
+    display: inline-block;
+    overflow: hidden;
+}
+.Result{
+    display: inline-block;
+    background-color: gold;
+    height: auto;
+    width: auto;
+    border-radius: 1rem;
+    text-align: center;
+
+}

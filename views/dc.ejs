@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>CRICSTATS XI</title>
+    <!-- Required meta tags -->
+    <link rel="stylesheet" href="home.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="shortcut icon" href="Pictures/favicon.io.png" type="image/x-icon">
+</head>
+
+<body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <div class="head">
+        <div class="content">
+            <div class="logo"><img height="100px" width="100px" src="Pictures/favicon.io.png" alt=""></div>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+                    aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="home.html">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="live.html">Live Match</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Fixture.html">Fixture</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Stats.html">Stats</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="PastMatches.html">Past Matches</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="PointTable.html">Point Table</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="More.html">More</a>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">CRICKSTATS XI</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+            aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="MostRun.html"><img src="https://img.icons8.com/color/48/000000/cricket.png"/> Most Runs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="MostWicket.html"><img src="https://img.icons8.com/external-smashingstocks-flat-smashing-stocks/48/000000/external-wicket-sports-and-games-smashingstocks-flat-smashing-stocks.png"/> Most Wickets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="StatsByTeam.html"><img src="Pictures/IPL-2022.jpg" alt=""> Team Stats</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <h2><b>Most Run Maker</b></h2>
+    <table class="table table-dark table-hover table-striped">
+        <thead bgcolor="light">
+            <tr>
+                <th>Player Name</th>
+                <th>Total Run</th>
+                <th>Highest Runs</th>
+                <th>Total Matches</th>
+                <th>Strike Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% batslist.forEach(Bats =>{%>
+                <tr>
+                <td><%=Bats.player%></td>
+                <td><%=Bats.runs%></td>
+                <td><%=Bats.highscore%></td>
+                <td><%=Bats.matches%></td>
+                <td><%=Bats.strikeRate%></td>
+                </tr>
+            <%})%>
+        </tbody>
+    </table><br><br>
+    <h2><b>Most Wicket Taker</b></h2><br>
+    <table class="table table-dark table-hover table-striped">
+        <thead bgcolor="light">
+            <tr>
+                <th>Player Name</th>
+                <th>Total Wicket</th>
+                <th>Economy</th>
+                <th>Average</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% batslist.forEach(Bowls =>{%>
+                <tr>
+                <td><%=Bowls.player%></td>
+                <td><%=Bowls.wickets%></td>
+                <td><%=Bowls.economy%></td>
+                <td><%=Bowls.avg%></td>
+               
+                </tr>
+            <%})%>
+        </tbody>
+    </table>
+    
+</body>
+
+</html>
