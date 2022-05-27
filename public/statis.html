@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home-Cri-Learner</title>
+  <!--<link rel="stylesheet" href="css/style_home.css">-->
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Red+Hat+Display:wght@300;700&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="stats.css">
+
+</head>
+
+<body >
+<header><img src="./Home/2112119.png" width="20%"  /> COMPARE STATISTICS  <img src="./Home/7037815.png" alt="" width="20%"></header>
+
+<h1 style ="color: white;" id="batswin">the winner is</h1>
+<div class="area1">
+    
+    <form id="form">
+      <input  id="playername" placeholder="Enter Player Name" required />
+      <div>
+      <button class="btn-grad">Get Player Info</button>
+      
+    </form>
+    
+
+    
+    <form id="form2">
+      <input id="playername2" placeholder="Enter Player Name" required />
+      <button class="btn-grad">Get Player Info</button>
+     
+    </form>
+   
+  
+  </div>
+  <div class="separator">LET'S COMPARE</div>
+  
+  <div class="pl1">
+    
+  <div id="result1"></div>
+  
+    <div id="result2"></div>
+    
+    <div id="result3"></div>
+</div>
+    
+    <div class="pl2">
+    <div id="presult1"></div>
+    <div id="presult2"></div>
+  
+    <div id="presult3"></div>
+  </div>
+  
+  <br>
+  
+
+  
+  </body>
+  
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+<script>
+ //var information;
+//batting iables
+var fname,finnings,fruns,fhighest,faverage,fsr,ffour,fsix,fducks,ffifty,fhundred;
+var sename,sinnings,sruns,shighest,saverage,ssr,sfour,ssix,sducks,sfifty,shundred;
+
+//bowling iables
+ var fwickets,feco,fmaiden,ffifer,ftens;
+ var swickets,seco,smaiden,sfifer,stens;
+
+
+
+  var playerNames = [];
+   var result;
+   var inputplayer;
+  $("#playername").on("keyup", function () {
+    inputplayer = $(this).val();
+    $.ajax({
+      method: "POST",
+      url: "/getplayernames",
+      data: { input: $(this).val() },
+      success: function (data) {
+        //console.log(data.names)
+        playerNames = data.names;
+        let match = playerNames.filter((name) => {
+          const regex = new RegExp(`^${inputplayer}`, "gi");
+          return name.match(regex);
+        });
+
+        if (inputplayer.length === 0) {
+          playerNames = [];
+        }
+
+        $("#playername").autocomplete({
+          source: match,
+        });
+      },
+    });
+  });
+
+
+
+
+
+  $("#playername").onchange = function () {
+    inputplayer = $(this).val();
+    console.log(inputplayer);
+  };
+
+
+
+
+
+  $("#form").submit(function (e) {
+    e.preventDefault()
+
+
+    $("#button").text("Fetching Player Stats")
+    $("#button").prop("disabled", "true")
+    $("#result1").empty()
+    $("#result2").empty()
+    $("#result3").empty()
+
+    // getting player general information
+    $.ajax({
+      method: "POST",
+      url: "/getplayerinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+      
+        fname=data.info.name;
+          result1 = `
+                    <br>
+    <h4  style="color:#fdaa00;"> Player Information</h4>
+           
+                        <table class="table table-striped" style="width:30%; >
+    <thead style="color: blue">
+      <tr style="color: blue"> 
+        <th >Name</th>
+      </tr>
+    </thead>
+        </tr>
+      </thead>
+    <tbody style="color: #00fd0e;">
+      <tr>
+        
+        <td>${data.info.name}</td>
+        
+       
+      </tr>
+    </tbody>
+    </table>
+                        `;
+          $("#result1").append(result1)
+        }// else
+      }
+
+    })
+
+
+    // getting player batting stats
+
+    $.ajax({
+      method: "POST",
+      url: "/getplayerbatinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          console.log(data.info.values[0].values[0]);
+        //    no1=parseInt(data.info.values[6].values[4]);
+        //  no2=parseInt(data.info.values[8].values[4]);
+
+        // alert(no1+" "+no2+" "+(no1+no2));
+         // information=${data.info.values[0].values[0]};
+
+          finnings=parseInt(data.info.values[1].values[4]);
+          fruns=parseInt(data.info.values[2].values[4]);
+          fhighest=parseInt(data.info.values[4].values[4]);
+          faverage=parseInt(data.info.values[5].values[4]);
+          fsr=parseInt(data.info.values[6].values[4]);
+          ffour=parseInt(data.info.values[8].values[4]);
+          fsix=parseInt(data.info.values[9].values[4]);
+          fducks=parseInt(data.info.values[10].values[4]);
+          ffifty=parseInt(data.info.values[11].values[4]);
+          fhundred=parseInt(data.info.values[12].values[4]);
+    // alert(finnings+"<br>"+fruns+" "+fhighest+" "+faverage+" "+fsr+" "+ffour+" "+fsix+" "+fducks+" "+ffifty+" "+fhundred);
+          result2 = `
+                    <br>
+    <h4  style="color:#fdaa00">Batting Statistics</h4>
+                        <table class="table table-striped" style="width:auto; >
+    <thead style="color: blue">
+      <tr style="color: blue">
+        <th> parameter </th>
+        
+        <th>IPL</th>
+      </tr>
+    </thead>
+    <tbody style="color: #00fd0e">
+      <tr>
+         
+        <td>${data.info.values[0].values[0]}</td>
+       
+        <td>${data.info.values[0].values[4]}</td>
+
+      </tr>
+      <tr>
+        <td>${data.info.values[1].values[0]}</td>
+       
+        <td>${data.info.values[1].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[2].values[0]}</td>
+        
+        <td>${data.info.values[2].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[3].values[0]}</td>
+       
+        <td>${data.info.values[3].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[4].values[0]}</td>
+       
+        <td>${data.info.values[4].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[5].values[0]}</td>
+        
+        <td>${data.info.values[5].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[6].values[0]}</td>
+        
+        <td>${data.info.values[6].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[8].values[0]}</td>
+        
+        <td>${data.info.values[8].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[9].values[0]}</td>
+       
+        <td>${data.info.values[9].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[10].values[0]}</td>
+        
+        <td>${data.info.values[10].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[11].values[0]}</td>
+        
+        <td>${data.info.values[11].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[12].values[0]}</td>
+       
+        <td>${data.info.values[12].values[4]}</td>
+      </tr>
+    </tbody>
+    </table>
+    <br>
+                        `;
+                       
+          $("#result2").append(result2)
+        }// else
+
+
+
+      }
+
+    })
+   
+    // getting player bowling stats
+    $.ajax({
+      method: "POST",
+      url: "/getplayerbowlinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+         // alert(${data.info.values[5].values[4]});
+        // no2=parseInt(${data.info.values[7].values[4]});)
+          // no1=parseInt(${datainfo.values[5].values[4]});
+       //  no2=parseInt(${data.info.values[7].values[4]});
+
+        fwickets=parseInt(data.info.values[5].values[4]);
+        feco=parseInt(data.info.values[7].values[4]);
+        fmaiden=parseInt(data.info.values[4].values[4]);
+        ffifer=parseInt(data.info.values[12].values[4]);
+        ftens=parseInt(data.info.values[13].values[4]);
+
+          result3 = `
+                    
+    <h4  style="color:#fdaa00">Bowling Statistics</h4>
+                        <table class="table table-striped" style="width:auto; >
+    <thead style="color: blue">
+      <tr style="color: blue">
+        <th>parameter</th>
+       
+        <th>Ipl</th>
+      </tr>
+    </thead>
+    <tbody style="color: #00fd0e">
+      <tr>
+
+        <td>${data.info.values[0].values[0]}</td>
+        
+        <td>${data.info.values[0].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[1].values[0]}</td>
+        
+        <td>${data.info.values[1].values[4]}</td>
+       
+      </tr>
+      <tr>
+        <td>${data.info.values[5].values[0]}</td>
+        
+        <td>${data.info.values[5].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[7].values[0]}</td>
+        
+        <td>${data.info.values[7].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[4].values[0]}</td>
+       
+        <td>${data.info.values[4].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[12].values[0]}</td>
+       
+        <td>${data.info.values[12].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[13].values[0]}</td>
+        
+        <td>${data.info.values[13].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[9].values[0]}</td>
+        
+        <td>${data.info.values[9].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[10].values[0]}</td>
+        
+        <td>${data.info.values[10].values[4]}</td>
+      </tr>
+    </tbody>
+    </table>
+    
+                        `;
+          $("#result3").append(result3)
+          
+          
+        }// else
+
+
+
+      }
+      
+
+    })
+
+  })
+
+  </script>
+  <script>
+
+// player 2 data
+
+  var playerNames = [];
+   var  result;
+   var  inputplayer;
+    $("#playername2").on("keyup", function () {
+      inputplayer = $(this).val();
+      $.ajax({
+        method: "POST",
+        url: "/getplayernames",
+        data: { input: $(this).val() },
+        success: function (data) {
+          //console.log(data.names)
+          playerNames = data.names;
+          let match = playerNames.filter((name) => {
+            const regex = new RegExp(`^${inputplayer}`, "gi");
+            return name.match(regex);
+          });
+  
+          if (inputplayer.length === 0) {
+            playerNames = [];
+          }
+  
+          $("#playername2").autocomplete({
+            source: match,
+          });
+        },
+      });
+    });
+  
+  
+  
+  
+  
+    $("#playername2").onchange = function () {
+      inputplayer = $(this).val();
+      console.log(inputplayer);
+    };
+  
+  
+  
+  
+  
+    $("#form2").submit(function (e) {
+      e.preventDefault()
+  
+  
+      $("#button").text("Fetching Player Stats")
+      $("#button").prop("disabled", "true")
+    
+      $("#presult1").empty()
+      $("#presult2").empty()
+      $("#presult3").empty()
+  
+      // getting player general information
+      $.ajax({
+        method: "POST",
+        url: "/getplayerinfo",
+        data: { playername: inputplayer },
+        success: function (data) {
+          console.log(data.inputplayer);
+          console.log(data.info);
+         
+          
+          if (data.info == "Player not found") {
+            sname=$("#button").text();
+            $("#playername").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+            swal("Error", "Player Name Doesn't Found", "error");
+            sename=data.info.name;
+            
+          } else {
+            $("#playername2").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+
+           //sname=data.info.name;
+           sename=data.info.name;
+          // alert(sename);
+          
+            presult1 = `
+                      
+            <h4  style="color:#fdaa00;"> Player Information</h4>
+            <img src=$ll alt="playerimagae" width="30%px" height="30%"/>
+                        <table class="table table-striped" style="width:30%; >
+    <thead style="color: blue">
+      <tr style="color: blue"> 
+        <th >Name</th>
+        
+        <th>Country</th>
+      </tr>
+    </thead>
+        </tr>
+      </thead>
+      <tbody style="color: #00fd0e; justify-content:center">
+        
+          
+          <tr>
+          <td>${data.info.name}</td>
+          
+          <td>${data.info.intlTeam}</td>
+        </tr>
+      </tbody>
+      </table>
+                          `;
+            $("#presult1").append(presult1)
+          }// else
+        }
+  
+      })
+  
+  
+      // getting player batting stats
+  
+      $.ajax({
+        method: "POST",
+        url: "/getplayerbatinfo",
+        data: { playername: inputplayer },
+        success: function (data) {
+          console.log(data.inputplayer);
+          console.log(data.info);
+          
+          if (data.info == "Player not found") {
+            $("#playername2").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+            swal("Error", "Player Name Doesn't Found", "error");
+          } else {
+            $("#playername2").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+            console.log(data.info.values[0].values[0]);
+           
+            sinnings=parseInt(data.info.values[1].values[4]);
+          sruns=parseInt(data.info.values[2].values[4]);
+          shighest=parseInt(data.info.values[4].values[4]);
+          saverage=parseInt(data.info.values[5].values[4]);
+          ssr=parseInt(data.info.values[6].values[4]);
+          sfour=parseInt(data.info.values[8].values[4]);
+          ssix=parseInt(data.info.values[9].values[4]);
+          sducks=parseInt(data.info.values[10].values[4]);
+          sfifty=parseInt(data.info.values[11].values[4]);
+          shundred=parseInt(data.info.values[12].values[4]);
+            
+            
+            presult2 = `
+                      
+      <h4  style="color:#fdaa00">Batting Statistics</h4>
+                          <table class="table table-striped" style="width:30%; >
+      <thead style="color: blue">
+        <tr style="color: blue">
+          <th> parameter </th>
+          
+          <th>IPL</th>
+        </tr>
+      </thead>
+      <tbody style="color: #00fd0e">
+        <tr>
+          
+          <td>${data.info.values[0].values[0]}</td>
+         
+          <td>${data.info.values[0].values[4]}</td>
+  
+        </tr>
+        <tr>
+          <td>${data.info.values[1].values[0]}</td>
+         
+          <td>${data.info.values[1].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[2].values[0]}</td>
+          
+          <td>${data.info.values[2].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[3].values[0]}</td>
+         
+          <td>${data.info.values[3].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[4].values[0]}</td>
+         
+          <td>${data.info.values[4].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[5].values[0]}</td>
+          
+          <td>${data.info.values[5].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[6].values[0]}</td>
+          
+          <td>${data.info.values[6].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[8].values[0]}</td>
+          
+          <td>${data.info.values[8].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[9].values[0]}</td>
+         
+          <td>${data.info.values[9].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[10].values[0]}</td>
+          
+          <td>${data.info.values[10].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[11].values[0]}</td>
+          
+          <td>${data.info.values[11].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[12].values[0]}</td>
+         
+          <td>${data.info.values[12].values[4]}</td>
+        </tr>
+      </tbody>
+      </table>
+      <br>
+                          `;
+                         
+            $("#presult2").append(presult2)
+          }// else
+  
+  
+  
+        }
+  
+      })
+     
+      // getting player bowling stats
+      $.ajax({
+        method: "POST",
+        url: "/getplayerbowlinfo",
+        data: { playername: inputplayer },
+        success: function (data) {
+          console.log(data.inputplayer);
+          console.log(data.info);
+          if (data.info == "Player not found") {
+            $("#playername2").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+            swal("Error", "Player Name Doesn't Found", "error");
+          } else {
+            $("#playername2").val("")
+            $("#button").removeAttr("disabled");
+            $("#button").text("Get Player Info")
+
+            swickets=parseInt(data.info.values[5].values[4]);
+        seco=parseInt(data.info.values[7].values[4]);
+        smaiden=parseInt(data.info.values[4].values[4]);
+        sfifer=parseInt(data.info.values[12].values[4]);
+        stens=parseInt(data.info.values[13].values[4]);
+
+            presult3 = `
+                    
+      <h4 " style="color:#fdaa00">Bowling Statistics</h4>
+                          <table class="table table-striped" style="width:30%; >
+      <thead style="color: blue">
+        <tr style="color: blue">
+          <th>parameter</th>
+         
+          <th>Ipl</th>
+        </tr>
+      </thead>
+      <tbody style="color: #00fd0e">
+        <tr>
+  
+          <td>${data.info.values[0].values[0]}</td>
+          
+          <td>${data.info.values[0].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[1].values[0]}</td>
+          
+          <td>${data.info.values[1].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[5].values[0]}</td>
+          
+          <td>${data.info.values[5].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[7].values[0]}</td>
+          
+          <td>${data.info.values[7].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[4].values[0]}</td>
+         
+          <td>${data.info.values[4].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[12].values[0]}</td>
+         
+          <td>${data.info.values[12].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[13].values[0]}</td>
+          
+          <td>${data.info.values[13].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[9].values[0]}</td>
+          
+          <td>${data.info.values[9].values[4]}</td>
+        </tr>
+        <tr>
+          <td>${data.info.values[10].values[0]}</td>
+          
+          <td>${data.info.values[10].values[4]}</td>
+        </tr>
+      </tbody>
+      </table>
+      
+                          `;
+                          
+            $("#presult3").append(presult3)
+           
+
+            $( document ).ready(function() {
+    
+  
+    var p1total= finnings+fruns+fhighest+faverage+fsr+ffour+fsix+ffifer+fhundred-ffifty;
+  var p2total= sinnings+sruns+shighest+saverage+ssr+sfour+ssix+sfifer+shundred-sfifty;
+  alert (p1total+" "+p2total+" "+sename+" "+fname);
+  
+  if(p1total>p2total){
+    $('#batswin').text(fname);
+    $('#batswin').css("color","red");
+    alert(fname+" is winner"+" "+sename+" is runnerup");
+    
+  
+     
+  }
+  
+})
+            
+          }// else
+  
+  
+  
+        }
+        
+        
+  
+      })
+  
+    })
+   
+  
+  
+  </script>
+
+</html>

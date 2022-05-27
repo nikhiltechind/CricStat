@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home-Cri-Learner</title>
+  <!--<link rel="stylesheet" href="css/style_home.css">-->
+  <link rel="stylesheet" href="statis.html">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Red+Hat+Display:wght@300;700&display=swap"
+    rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <link rel="stylesheet" href="stats.css">
+
+
+</head>
+
+<body>
+<a href="statis.html">Statistics</a>
+  <div class="form-container">
+    <div class="form-control2">Search Below For STATS of Your Player</div>
+    <form id="form">
+      <input class="form-control1" id="playername" placeholder="Enter Player Name" required />
+      <button class="btn-grad">Get Player Info</button>
+      
+    </form>
+    
+    <div id="result1"></div>
+    <div id="result2"></div>
+    <div id="result3"></div>
+  </div>
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+<script>
+
+  var playerNames = [];
+  var result;
+  var inputplayer;
+  $("#playername").on("keyup", function () {
+    inputplayer = $(this).val();
+    $.ajax({
+      method: "POST",
+      url: "/getplayernames",
+      data: { input: $(this).val() },
+      success: function (data) {
+        //console.log(data.names)
+        playerNames = data.names;
+        let match = playerNames.filter((name) => {
+          const regex = new RegExp(`^${inputplayer}`, "gi");
+          return name.match(regex);
+        });
+
+        if (inputplayer.length === 0) {
+          playerNames = [];
+        }
+
+        $("#playername").autocomplete({
+          source: match,
+        });
+      },
+    });
+  });
+
+
+
+
+
+  $("#playername").onchange = function () {
+    inputplayer = $(this).val();
+    console.log(inputplayer);
+  };
+
+
+
+
+
+  $("#form").submit(function (e) {
+    e.preventDefault()
+
+
+    $("#button").text("Fetching Player Stats")
+    $("#button").prop("disabled", "true")
+    $("#result1").empty()
+    $("#result2").empty()
+    $("#result3").empty()
+
+    // getting player general information
+    $.ajax({
+      method: "POST",
+      url: "/getplayerinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          result1 = `
+                    <br>
+    <h4 class="text-center" style="color:#fdaa00;"> Player Information</h4>
+                        <table class="table table-striped" style="width:80%; margin-left:10%;>
+    <thead style="color: blue">
+      <tr style="color: blue"> 
+        <th>Name</th>
+        <th>Date of Birth (Age)</th>
+        <th>Birth Place</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody style="color: #00fd0e;">
+      <tr>
+        <td>${data.info.image}</td>
+        <td>${data.info.name}</td>
+        <td>${data.info.DoBFormat}</td>
+        <td>${data.info.birthPlace}</td>
+        <td>${data.info.intlTeam}</td>
+      </tr>
+    </tbody>
+    </table>
+                        `;
+          $("#result1").append(result1)
+        }// else
+      }
+
+    })
+
+
+    // getting player batting stats
+
+    $.ajax({
+      method: "POST",
+      url: "/getplayerbatinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          console.log(data.info.values[0].values[0]);
+          
+          
+          result2 = `
+                    <br>
+    <h4 class="text-center" style="color:#fdaa00">Batting Statistics</h4>
+                        <table class="table table-striped" style="width:80%; margin-left:10%;>
+    <thead style="color: blue">
+      <tr style="color: blue">
+        <th> parameter </th>
+        <th>TEST</th>
+        <th>ODI </th>
+        <th>T-20</th>
+        <th>IPL</th>
+      </tr>
+    </thead>
+    <tbody style="color: #00fd0e">
+      <tr>
+        
+        <td>${data.info.values[0].values[0]}</td>
+        <td>${data.info.values[0].values[1]}</td>
+        <td>${data.info.values[0].values[2]}</td>
+        <td>${data.info.values[0].values[3]}</td>
+        <td>${data.info.values[0].values[4]}</td>
+
+      </tr>
+      <tr>
+        <td>${data.info.values[1].values[0]}</td>
+        <td>${data.info.values[1].values[1]}</td>
+        <td>${data.info.values[1].values[2]}</td>
+        <td>${data.info.values[1].values[3]}</td>
+        <td>${data.info.values[1].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[2].values[0]}</td>
+        <td>${data.info.values[2].values[1]}</td>
+        <td>${data.info.values[2].values[2]}</td>
+        <td>${data.info.values[2].values[3]}</td>
+        <td>${data.info.values[2].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[3].values[0]}</td>
+        <td>${data.info.values[3].values[1]}</td>
+        <td>${data.info.values[3].values[2]}</td>
+        <td>${data.info.values[3].values[3]}</td>
+        <td>${data.info.values[3].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[4].values[0]}</td>
+        <td>${data.info.values[4].values[1]}</td>
+        <td>${data.info.values[4].values[2]}</td>
+        <td>${data.info.values[4].values[3]}</td>
+        <td>${data.info.values[4].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[5].values[0]}</td>
+        <td>${data.info.values[5].values[1]}</td>
+        <td>${data.info.values[5].values[2]}</td>
+        <td>${data.info.values[5].values[3]}</td>
+        <td>${data.info.values[5].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[6].values[0]}</td>
+        <td>${data.info.values[6].values[1]}</td>
+        <td>${data.info.values[6].values[2]}</td>
+        <td>${data.info.values[6].values[3]}</td>
+        <td>${data.info.values[0].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[8].values[0]}</td>
+        <td>${data.info.values[8].values[1]}</td>
+        <td>${data.info.values[8].values[2]}</td>
+        <td>${data.info.values[8].values[3]}</td>
+        <td>${data.info.values[8].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[9].values[0]}</td>
+        <td>${data.info.values[9].values[1]}</td>
+        <td>${data.info.values[9].values[2]}</td>
+        <td>${data.info.values[9].values[3]}</td>
+        <td>${data.info.values[9].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[10].values[0]}</td>
+        <td>${data.info.values[10].values[1]}</td>
+        <td>${data.info.values[10].values[2]}</td>
+        <td>${data.info.values[10].values[3]}</td>
+        <td>${data.info.values[10].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[11].values[0]}</td>
+        <td>${data.info.values[11].values[1]}</td>
+        <td>${data.info.values[11].values[2]}</td>
+        <td>${data.info.values[11].values[3]}</td>
+        <td>${data.info.values[11].values[4]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[12].values[0]}</td>
+        <td>${data.info.values[12].values[1]}</td>
+        <td>${data.info.values[12].values[2]}</td>
+        <td>${data.info.values[12].values[3]}</td>
+        <td>${data.info.values[12].values[4]}</td>
+      </tr>
+    </tbody>
+    </table>
+    <br>
+                        `;
+                       
+          $("#result2").append(result2)
+        }// else
+
+
+
+      }
+
+    })
+   
+    // getting player bowling stats
+    $.ajax({
+      method: "POST",
+      url: "/getplayerbowlinfo",
+      data: { playername: inputplayer },
+      success: function (data) {
+        console.log(data.inputplayer);
+        console.log(data.info);
+        if (data.info == "Player not found") {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          swal("Error", "Player Name Doesn't Found", "error");
+        } else {
+          $("#playername").val("")
+          $("#button").removeAttr("disabled");
+          $("#button").text("Get Player Info")
+          result3 = `
+                    <br>
+    <h4 class="text-center" style="color:#fdaa00">Bowling Statistics</h4>
+                        <table class="table table-striped" style="width:80%; margin-left:10%;>
+    <thead style="color: blue">
+      <tr style="color: blue">
+        <th>parameter</th>
+        <th>Test</th>
+        <th>T-20</th>
+        <th>ODI</th>
+      </tr>
+    </thead>
+    <tbody style="color: #00fd0e">
+      <tr>
+
+        <td>${data.info.values[0].values[0]}</td>
+        <td>${data.info.values[0].values[1]}</td>
+        <td>${data.info.values[0].values[2]}</td>
+        <td>${data.info.values[0].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[1].values[0]}</td>
+        <td>${data.info.values[1].values[1]}</td>
+        <td>${data.info.values[1].values[2]}</td>
+        <td>${data.info.values[1].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[5].values[0]}</td>
+        <td>${data.info.values[5].values[1]}</td>
+        <td>${data.info.values[5].values[2]}</td>
+        <td>${data.info.values[5].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[7].values[0]}</td>
+        <td>${data.info.values[7].values[1]}</td>
+        <td>${data.info.values[7].values[2]}</td>
+        <td>${data.info.values[7].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[4].values[0]}</td>
+        <td>${data.info.values[4].values[1]}</td>
+        <td>${data.info.values[4].values[2]}</td>
+        <td>${data.info.values[4].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[12].values[0]}</td>
+        <td>${data.info.values[12].values[1]}</td>
+        <td>${data.info.values[12].values[2]}</td>
+        <td>${data.info.values[12].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[13].values[0]}</td>
+        <td>${data.info.values[13].values[1]}</td>
+        <td>${data.info.values[13].values[2]}</td>
+        <td>${data.info.values[13].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[9].values[0]}</td>
+        <td>${data.info.values[9].values[1]}</td>
+        <td>${data.info.values[9].values[2]}</td>
+        <td>${data.info.values[9].values[3]}</td>
+      </tr>
+      <tr>
+        <td>${data.info.values[10].values[0]}</td>
+        <td>${data.info.values[10].values[1]}</td>
+        <td>${data.info.values[10].values[2]}</td>
+        <td>${data.info.values[10].values[3]}</td>
+      </tr>
+    </tbody>
+    </table>
+    
+                        `;
+          $("#result3").append(result3)
+          $(".dom").text("chal gaya be");
+          $("#form.btn").hide();
+        }// else
+
+
+
+      }
+      
+
+    })
+
+  })
+
+
+
+
+
+
+</script>
+
+</html>
