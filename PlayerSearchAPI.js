@@ -116,9 +116,9 @@ var getPlayerBowlData = function (playerId, summary) {
 }
 
 
-var abcd = {
+var PlayerSearchAPI = {
     getPlayerInfoByName: searchByPlayerName,
     getPlayerBatInfoByName: searchByPlayerName_Bat,
     getPlayerBowlInfoByName: searchByPlayerName_Bowl,
 }
-module.exports = abcd;
+module.exports = PlayerSearchAPI;
